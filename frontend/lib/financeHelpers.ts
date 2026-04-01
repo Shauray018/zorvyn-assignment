@@ -92,27 +92,35 @@ export function getAverageDailySpend(txs: Transaction[]): number {
 }
 
 export function getMonthOverMonthChange(txs: Transaction[]): number {
+  // Compare last two COMPLETE months (skip current incomplete month)
   const now = new Date()
-  const currentMonth = now.getMonth()
-  const currentYear = now.getFullYear()
+  const cm = now.getMonth()
+  const cy = now.getFullYear()
 
-  const currentMonthTxs = txs.filter((t) => {
-    const d = new Date(t.date)
-    return d.getMonth() === currentMonth && d.getFullYear() === currentYear && t.type === 'expense'
-  })
+  // Last complete month
+  const lm = cm === 0 ? 11 : cm - 1
+  const ly = cm === 0 ? cy - 1 : cy
 
-  const lastMonth = currentMonth === 0 ? 11 : currentMonth - 1
-  const lastMonthYear = currentMonth === 0 ? currentYear - 1 : currentYear
-  const lastMonthTxs = txs.filter((t) => {
-    const d = new Date(t.date)
-    return d.getMonth() === lastMonth && d.getFullYear() === lastMonthYear && t.type === 'expense'
-  })
+  // Month before that
+  const pm = lm === 0 ? 11 : lm - 1
+  const py = lm === 0 ? ly - 1 : ly
 
-  const currentTotal = currentMonthTxs.reduce((sum, t) => sum + t.amount, 0)
-  const lastTotal = lastMonthTxs.reduce((sum, t) => sum + t.amount, 0)
+  const lastTotal = txs
+    .filter((t) => {
+      const d = new Date(t.date)
+      return d.getMonth() === lm && d.getFullYear() === ly && t.type === 'expense'
+    })
+    .reduce((sum, t) => sum + t.amount, 0)
 
-  if (lastTotal === 0) return 0
-  return Math.round(((currentTotal - lastTotal) / lastTotal) * 100)
+  const prevTotal = txs
+    .filter((t) => {
+      const d = new Date(t.date)
+      return d.getMonth() === pm && d.getFullYear() === py && t.type === 'expense'
+    })
+    .reduce((sum, t) => sum + t.amount, 0)
+
+  if (prevTotal === 0) return 0
+  return Math.round(((lastTotal - prevTotal) / prevTotal) * 100)
 }
 
 export function formatINR(amount: number): string {

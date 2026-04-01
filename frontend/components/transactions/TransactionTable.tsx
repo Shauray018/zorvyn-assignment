@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Skeleton } from '@/components/ui/skeleton'
+import { Card, CardContent } from '@/components/ui/card'
 import {
   Dialog,
   DialogContent,
@@ -31,7 +31,7 @@ import { EditTransactionModal } from './EditTransactionModal'
 import type { Transaction } from '@/types'
 
 export function TransactionTable() {
-  const { transactions, loading, deleteTransaction } = useTransactionStore()
+  const { transactions, deleteTransaction } = useTransactionStore()
   const role = useRoleStore((s) => s.role)
   const { search, category, type, sortBy, sortOrder } = useFilterStore()
   const [editTx, setEditTx] = useState<Transaction | null>(null)
@@ -64,16 +64,6 @@ export function TransactionTable() {
     return result
   }, [transactions, search, category, type, sortBy, sortOrder])
 
-  if (loading) {
-    return (
-      <div className="space-y-2">
-        {Array.from({ length: 8 }).map((_, i) => (
-          <Skeleton key={i} className="h-12 w-full" />
-        ))}
-      </div>
-    )
-  }
-
   if (filtered.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-muted-foreground">
@@ -93,7 +83,66 @@ export function TransactionTable() {
 
   return (
     <>
-      <div className="rounded-md border">
+      {/* Mobile: card layout */}
+      <div className="space-y-3 md:hidden">
+        {filtered.map((tx) => {
+          const catConfig = getCategoryConfig(tx.category)
+          return (
+            <Card key={tx.id}>
+              <CardContent className="p-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate font-medium">{tx.description}</p>
+                    <p className="text-xs text-muted-foreground">{formatDate(tx.date)}</p>
+                    <div className="mt-2 flex items-center gap-2">
+                      <Badge
+                        variant="outline"
+                        className="text-xs"
+                        style={{ borderColor: catConfig.color, color: catConfig.color }}
+                      >
+                        {tx.category}
+                      </Badge>
+                      <Badge variant={tx.type === 'income' ? 'default' : 'destructive'} className="text-xs">
+                        {tx.type === 'income' ? 'Income' : 'Expense'}
+                      </Badge>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p
+                      className={cn(
+                        'text-lg font-semibold',
+                        tx.type === 'income' ? 'text-green-500' : 'text-red-500'
+                      )}
+                    >
+                      {tx.type === 'income' ? '+' : '-'}
+                      {formatINR(tx.amount)}
+                    </p>
+                    {role === 'admin' && (
+                      <div className="mt-2 flex justify-end gap-2">
+                        <Button variant="outline" size="sm" onClick={() => setEditTx(tx)}>
+                          <Pencil className="mr-1 size-3.5" />
+                          Edit
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => setDeleteTx(tx)}
+                        >
+                          <Trash2 className="mr-1 size-3.5" />
+                          Delete
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )
+        })}
+      </div>
+
+      {/* Desktop: table layout */}
+      <div className="hidden md:block rounded-md border">
         <Table>
           <TableHeader>
             <TableRow>

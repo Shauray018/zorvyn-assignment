@@ -11,6 +11,7 @@ import {
   formatINR,
 } from '@/lib/financeHelpers'
 import { cn } from '@/lib/utils'
+import { BentoCard } from './DashboardBento'
 
 export function SummaryCards() {
   const transactions = useTransactionStore((s) => s.transactions)
@@ -26,7 +27,6 @@ export function SummaryCards() {
       icon: TrendingUp,
       color: 'text-blue-500',
       bgColor: 'bg-blue-500/10',
-      sub: null,
     },
     {
       label: 'Total Income',
@@ -34,7 +34,6 @@ export function SummaryCards() {
       icon: ArrowDownLeft,
       color: 'text-green-500',
       bgColor: 'bg-green-500/10',
-      sub: null,
     },
     {
       label: 'Total Expenses',
@@ -42,7 +41,6 @@ export function SummaryCards() {
       icon: ArrowUpRight,
       color: 'text-red-500',
       bgColor: 'bg-red-500/10',
-      sub: null,
     },
     {
       label: 'Savings Rate',
@@ -50,27 +48,25 @@ export function SummaryCards() {
       icon: PiggyBank,
       color: 'text-purple-500',
       bgColor: 'bg-purple-500/10',
-      sub: null,
     },
   ]
 
   return (
     <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
       {cards.map((card) => (
-        <Card key={card.label}>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <span className="text-sm font-medium text-muted-foreground">{card.label}</span>
-            <div className={cn('rounded-md p-1.5', card.bgColor)}>
-              <card.icon className={cn('size-4', card.color)} />
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{card.value}</div>
-            {card.sub && (
-              <p className="mt-1 text-xs text-muted-foreground">{card.sub}</p>
-            )}
-          </CardContent>
-        </Card>
+        <BentoCard key={card.label}>
+          <Card className="h-full">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <span className="text-sm font-medium text-muted-foreground">{card.label}</span>
+              <div className={cn('rounded-md p-1.5', card.bgColor)}>
+                <card.icon className={cn('size-4', card.color)} />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{card.value}</div>
+            </CardContent>
+          </Card>
+        </BentoCard>
       ))}
     </div>
   )

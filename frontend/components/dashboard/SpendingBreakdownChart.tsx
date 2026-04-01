@@ -8,7 +8,6 @@ import {
   CardHeader,
   CardTitle,
   CardDescription,
-  CardFooter,
 } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import {
@@ -19,11 +18,12 @@ import {
 } from '@/components/ui/chart'
 import { useTransactionStore } from '@/store/useTransactionStore'
 import { getSpendingByCategory, getTotalExpenses, formatINR } from '@/lib/financeHelpers'
+import { getCategoryConfig } from '@/data/categories'
 
 export function SpendingBreakdownChart() {
   const { transactions, loading } = useTransactionStore()
 
-  const { chartData, chartConfig, totalExpenses } = React.useMemo(() => {
+  const { chartData, chartConfig, totalExpenses, spendingList } = React.useMemo(() => {
     const spending = getSpendingByCategory(transactions).slice(0, 6)
     const total = getTotalExpenses(transactions)
 
@@ -43,7 +43,7 @@ export function SpendingBreakdownChart() {
       }
     })
 
-    return { chartData: data, chartConfig: config, totalExpenses: total }
+    return { chartData: data, chartConfig: config, totalExpenses: total, spendingList: spending }
   }, [transactions])
 
   if (loading) {
@@ -62,14 +62,14 @@ export function SpendingBreakdownChart() {
 
   return (
     <Card className="flex flex-col">
-      <CardHeader className="items-center pb-0">
+      <CardHeader className="pb-2">
         <CardTitle>Spending Breakdown</CardTitle>
         <CardDescription>Expenses by category</CardDescription>
       </CardHeader>
-      <CardContent className="flex-1 pb-0">
+      <CardContent className="flex flex-col gap-4">
         <ChartContainer
           config={chartConfig}
-          className="mx-auto aspect-square max-h-[250px]"
+          className="mx-auto h-[280px] w-full"
         >
           <PieChart>
             <ChartTooltip
@@ -80,7 +80,8 @@ export function SpendingBreakdownChart() {
               data={chartData}
               dataKey="total"
               nameKey="category"
-              innerRadius={60}
+              innerRadius={70}
+              outerRadius={120}
               strokeWidth={5}
             >
               <Label
@@ -96,14 +97,14 @@ export function SpendingBreakdownChart() {
                         <tspan
                           x={viewBox.cx}
                           y={viewBox.cy}
-                          className="fill-foreground text-3xl font-bold"
+                          className="fill-foreground text-2xl font-bold"
                         >
-                          {totalExpenses.toLocaleString('en-IN')}
+                          {formatINR(totalExpenses)}
                         </tspan>
                         <tspan
                           x={viewBox.cx}
-                          y={(viewBox.cy || 0) + 24}
-                          className="fill-muted-foreground"
+                          y={(viewBox.cy || 0) + 22}
+                          className="fill-muted-foreground text-xs"
                         >
                           Total Spent
                         </tspan>
@@ -115,12 +116,36 @@ export function SpendingBreakdownChart() {
             </Pie>
           </PieChart>
         </ChartContainer>
-      </CardContent>
-      <CardFooter className="flex-col gap-2 text-sm">
-        <div className="leading-none text-muted-foreground">
-          Showing top {chartData.length} spending categories
+
+        <div className="space-y-2">
+          {spendingList.map((item) => {
+            const config = getCategoryConfig(item.category)
+            const Icon = config.icon
+            const pct = totalExpenses > 0 ? ((item.total / totalExpenses) * 100).toFixed(1) : '0'
+
+            return (
+              <div key={item.category} className="flex items-center gap-3 text-sm">
+                <div
+                  className="flex size-8 shrink-0 items-center justify-center"
+                  style={{ color: item.color }}
+                >
+                  <Icon className="size-4" />
+                </div>
+                <div className="flex flex-1 items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="size-2.5 shrink-0" style={{ backgroundColor: item.color }} />
+                    <span className="font-medium">{item.category}</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs text-muted-foreground">{pct}%</span>
+                    <span className="font-medium tabular-nums">{formatINR(item.total)}</span>
+                  </div>
+                </div>
+              </div>
+            )
+          })}
         </div>
-      </CardFooter>
+      </CardContent>
     </Card>
   )
 }

@@ -29,8 +29,8 @@ export function TransactionFilters() {
   } = useFilterStore()
 
   return (
-    <div className="flex flex-wrap items-center gap-3">
-      <div className="relative flex-1 min-w-[200px]">
+    <div className="space-y-3">
+      <div className="relative">
         <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
         <Input
           placeholder="Search transactions..."
@@ -40,53 +40,55 @@ export function TransactionFilters() {
         />
       </div>
 
-      <Select value={category} onValueChange={(v) => setCategory(v as typeof category)}>
-        <SelectTrigger className="w-[150px]">
-          <SelectValue placeholder="Category" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="All">All Categories</SelectItem>
-          {categoryConfig.map((c) => (
-            <SelectItem key={c.name} value={c.name}>
-              {c.name}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      <div className="flex flex-wrap items-center gap-2">
+        <Select value={category} onValueChange={(v) => setCategory(v as typeof category)}>
+          <SelectTrigger className="w-full sm:w-[150px]">
+            <SelectValue placeholder="Category" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="All">All Categories</SelectItem>
+            {categoryConfig.map((c) => (
+              <SelectItem key={c.name} value={c.name}>
+                {c.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
-      <Select value={type} onValueChange={(v) => setType(v as typeof type)}>
-        <SelectTrigger className="w-[130px]">
-          <SelectValue placeholder="Type" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="All">All Types</SelectItem>
-          <SelectItem value="income">Income</SelectItem>
-          <SelectItem value="expense">Expense</SelectItem>
-        </SelectContent>
-      </Select>
+        <Select value={type} onValueChange={(v) => setType(v as typeof type)}>
+          <SelectTrigger className="flex-1 sm:w-[130px] sm:flex-none">
+            <SelectValue placeholder="Type" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="All">All Types</SelectItem>
+            <SelectItem value="income">Income</SelectItem>
+            <SelectItem value="expense">Expense</SelectItem>
+          </SelectContent>
+        </Select>
 
-      <Select value={sortBy} onValueChange={(v) => setSortBy(v as typeof sortBy)}>
-        <SelectTrigger className="w-[120px]">
-          <SelectValue placeholder="Sort by" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="date">Date</SelectItem>
-          <SelectItem value="amount">Amount</SelectItem>
-        </SelectContent>
-      </Select>
+        <Select value={sortBy} onValueChange={(v) => setSortBy(v as typeof sortBy)}>
+          <SelectTrigger className="flex-1 sm:w-[120px] sm:flex-none">
+            <SelectValue placeholder="Sort by" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="date">Date</SelectItem>
+            <SelectItem value="amount">Amount</SelectItem>
+          </SelectContent>
+        </Select>
 
-      <Button
-        variant="outline"
-        size="icon"
-        onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-      >
-        <ArrowUpDown className="size-4" />
-      </Button>
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+        >
+          <ArrowUpDown className="size-4" />
+        </Button>
 
-      <Button variant="ghost" size="sm" onClick={resetFilters}>
-        <RotateCcw className="mr-1 size-3" />
-        Reset
-      </Button>
+        <Button variant="ghost" size="sm" onClick={resetFilters}>
+          <RotateCcw className="mr-1 size-3" />
+          Reset
+        </Button>
+      </div>
     </div>
   )
 }

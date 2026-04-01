@@ -57,15 +57,15 @@ export default function TransactionsPage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h2 className="text-xl font-semibold">All Transactions</h2>
         {role === 'admin' && (
           <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={() => exportCSV(filtered)}>
+            <Button variant="outline" size="sm" className="flex-1 sm:flex-none" onClick={() => exportCSV(filtered)}>
               <Download className="mr-1 size-4" />
               Export CSV
             </Button>
-            <Button size="sm" onClick={() => setAddOpen(true)}>
+            <Button size="sm" className="flex-1 sm:flex-none" onClick={() => setAddOpen(true)}>
               <Plus className="mr-1 size-4" />
               Add Transaction
             </Button>

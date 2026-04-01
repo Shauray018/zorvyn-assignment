@@ -23,7 +23,7 @@ export function Topbar() {
   useEffect(() => setMounted(true), [])
 
   return (
-    <header className="flex py-3 items-center gap-2 border-b bg-card px-4">
+    <header className="sticky top-0 z-20 flex py-3 items-center gap-2 border-b bg-background/20 backdrop-blur-md px-4">
       <SidebarTrigger className="-ml-1" />
       <Separator orientation="vertical" className="mr-2 h-4" />
       <h1 className="text-lg font-semibold">{title}</h1>

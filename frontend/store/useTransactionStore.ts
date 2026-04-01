@@ -7,6 +7,7 @@ import type { Transaction } from '@/types'
 type TransactionState = {
   transactions: Transaction[]
   loading: boolean
+  hydrated: boolean
   error: string | null
   fetchTransactions: () => Promise<void>
   addTransaction: (data: Omit<Transaction, 'id'>) => Promise<void>
@@ -18,11 +19,13 @@ export const useTransactionStore = create<TransactionState>()(
   persist(
     (set, get) => ({
       transactions: [],
-      loading: false,
+      loading: true,
+      hydrated: false,
       error: null,
 
       fetchTransactions: async () => {
-        if (get().transactions.length > 0) {
+        if (get().hydrated && get().transactions.length > 0) {
+          set({ loading: false })
           return
         }
         set({ loading: true, error: null })
@@ -79,6 +82,14 @@ export const useTransactionStore = create<TransactionState>()(
     {
       name: 'fintrack-transactions',
       partialize: (state) => ({ transactions: state.transactions }),
+      onRehydrateStorage: () => (state) => {
+        if (state) {
+          state.hydrated = true
+          if (state.transactions.length > 0) {
+            state.loading = false
+          }
+        }
+      },
     }
   )
 )
