@@ -21,6 +21,8 @@ export function SummaryCardsSkeleton() {
   )
 }
 
+const barHeights = [65, 43, 32, 53, 72, 40, 58]
+
 export function ChartCardSkeleton({ title }: { title: string }) {
   return (
     <Card>
@@ -30,11 +32,11 @@ export function ChartCardSkeleton({ title }: { title: string }) {
       </CardHeader>
       <CardContent>
         <div className="flex h-[300px] w-full items-end gap-2 pt-4">
-          {Array.from({ length: 7 }).map((_, i) => (
+          {barHeights.map((h, i) => (
             <Skeleton
               key={i}
               className="flex-1"
-              style={{ height: `${30 + Math.random() * 60}%` }}
+              style={{ height: `${h}%` }}
             />
           ))}
         </div>

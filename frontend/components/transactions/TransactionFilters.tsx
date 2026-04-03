@@ -1,7 +1,9 @@
 'use client'
 
+import { useState } from 'react'
 import { Search, RotateCcw } from 'lucide-react'
 import { Input } from '@/components/ui/input'
+import { useDebounce } from '@/hooks/use-debounce'
 import {
   Select,
   SelectContent,
@@ -28,14 +30,18 @@ export function TransactionFilters() {
     resetFilters,
   } = useFilterStore()
 
+  const [localSearch, setLocalSearch] = useState(search)
+
+  useDebounce(() => setSearch(localSearch), 300, [localSearch])
+
   return (
     <div className="space-y-3">
       <div className="relative">
         <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
         <Input
           placeholder="Search transactions..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          value={localSearch}
+          onChange={(e) => setLocalSearch(e.target.value)}
           className="pl-9"
         />
       </div>
@@ -85,7 +91,7 @@ export function TransactionFilters() {
           </SelectContent>
         </Select>
 
-        <Button variant="ghost" size="sm" onClick={resetFilters}>
+        <Button variant="ghost" size="sm" onClick={() => { resetFilters(); setLocalSearch('') }}>
           <RotateCcw className="mr-1 size-3" />
           Reset
         </Button>
