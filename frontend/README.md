@@ -1,4 +1,4 @@
-# FinTrack — Finance Dashboard
+# Finance Dashboard
 
 A clean, responsive finance dashboard built with Next.js 16, shadcn/ui, Recharts, and Zustand. Users can track financial activity, explore transactions, and understand spending patterns through interactive visualizations.
 
