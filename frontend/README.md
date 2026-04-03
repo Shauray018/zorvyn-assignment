@@ -1,6 +1,6 @@
 # FinTrack — Finance Dashboard
 
-A clean, responsive finance dashboard built with Next.js 14, shadcn/ui, Recharts, and Zustand.
+A clean, responsive finance dashboard built with Next.js 16, shadcn/ui, Recharts, and Zustand.
 
 ## Setup
 ```bash
@@ -11,7 +11,7 @@ npm run dev
 Open http://localhost:3000
 
 ## Tech Stack
-- Next.js 14 (App Router)
+- Next.js 16 (App Router)
 - shadcn/ui (all UI components)
 - Tailwind CSS v4
 - Recharts (data visualization)
@@ -28,7 +28,7 @@ Open http://localhost:3000
 - Mock API via Next.js Route Handlers
 
 ## Role Switching
-Use the role switcher dropdown in the top-right corner.
+Use the role switcher dropdown in the sidebar footer or the topbar.
 - Admin: can add, edit, delete transactions and export CSV
 - Viewer: read-only access to all data
 

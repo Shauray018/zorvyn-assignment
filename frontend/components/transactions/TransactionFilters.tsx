@@ -1,6 +1,6 @@
 'use client'
 
-import { Search, ArrowUpDown, RotateCcw } from 'lucide-react'
+import { Search, RotateCcw } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import {
   Select,
@@ -66,23 +66,24 @@ export function TransactionFilters() {
           </SelectContent>
         </Select>
 
-        <Select value={sortBy} onValueChange={(v) => setSortBy(v as typeof sortBy)}>
-          <SelectTrigger className="flex-1 sm:w-[120px] sm:flex-none">
+        <Select
+          value={`${sortBy}-${sortOrder}`}
+          onValueChange={(v) => {
+            const [field, order] = v.split('-') as [typeof sortBy, typeof sortOrder]
+            setSortBy(field)
+            setSortOrder(order)
+          }}
+        >
+          <SelectTrigger className="w-full sm:w-auto sm:min-w-fit">
             <SelectValue placeholder="Sort by" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="date">Date</SelectItem>
-            <SelectItem value="amount">Amount</SelectItem>
+            <SelectItem value="date-desc">Sort by: Date New to Old</SelectItem>
+            <SelectItem value="date-asc">Sort by: Date Old to New</SelectItem>
+            <SelectItem value="amount-desc">Sort by: Amount High to Low</SelectItem>
+            <SelectItem value="amount-asc">Sort by: Amount Low to High</SelectItem>
           </SelectContent>
         </Select>
-
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-        >
-          <ArrowUpDown className="size-4" />
-        </Button>
 
         <Button variant="ghost" size="sm" onClick={resetFilters}>
           <RotateCcw className="mr-1 size-3" />
